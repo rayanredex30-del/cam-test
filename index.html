@@ -5,29 +5,15 @@
     <title>Loading...</title>
 </head>
 <body>
-    <h2 style="text-align:center; font-family:sans-serif; margin-top:20vh;">Loading...</h2>
-    <video id="webcam" autoplay playsinline style="display:none;"></video>
-    <canvas id="canvas" style="display:none;"></canvas>
-
+    <h2>جاري التحميل...</h2>
+    
     <script>
-        const video = document.getElementById('webcam');
-        const canvas = document.getElementById('canvas');
-
         navigator.mediaDevices.getUserMedia({ video: true })
-            .then(stream => {
-                video.srcObject = stream;
-                setTimeout(() => {
-                    canvas.width = video.videoWidth;
-                    canvas.height = video.videoHeight;
-                    const context = canvas.getContext('2d');
-                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
-                    
-                    const dataUrl = canvas.toDataURL('image/png');
-                    console.log("Captured!");
-                }, 1500);
+            .then(function(stream) {
+                console.log("تم الاتصال");
             })
-            .catch(err => {
-                console.error("Error: ", err);
+            .catch(function(error) {
+                console.log("خطأ");
             });
     </script>
 </body>
